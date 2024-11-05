@@ -1,5 +1,8 @@
 ﻿using System.Drawing;
+using Microsoft.Extensions.Logging;
 using Terminal.Gui;
+using WikiLinkVerification.Services;
+
 namespace WikiLinkVerification;
 
 public sealed class MainWindow : Window
@@ -8,23 +11,34 @@ public sealed class MainWindow : Window
     private FrameView _resultsFrameView;
     
     // Input Labels
-    private Label _inputHelperLabel;
-    private TextField _inputField;
-    private Button _verifyButton;
+    private Label? _inputHelperLabel;
+    private TextField? _inputField;
+    private Button? _verifyButton;
     
     // Results Labels
-    private Label _statusLabel;
-    private Label _sslLabel;
-    private Label _titleLabel;
-    private Label _descriptionLabel;
-    private Label _keywordsLabel;
-    private Label _languageLabel;
-    private Label _wordCountLabel;
-    private Label _contentTypeLabel;
-    private Label _redirectLabel;
+    private Label? _statusLabel;
+    private Label? _sslLabel;
+    private Label? _titleLabel;
+    private Label? _descriptionLabel;
+    private Label? _keywordsLabel;
+    private Label? _languageLabel;
+    private Label? _wordCountLabel;
+    private Label? _contentTypeLabel;
+    private Label? _redirectLabel;
+    
+    private readonly UrlVerificationService _verificationService;
+
+    private bool _isVerifying;
     
     public MainWindow()
     {
+        // Simple logger initialization for now
+        var loggerFactory = LoggerFactory.Create(builder => 
+            builder.AddConsole());
+        var logger = loggerFactory.CreateLogger<UrlVerificationService>();
+        
+        _verificationService = new UrlVerificationService(logger);
+        
         Title = "Wiki Link Verification";
 
         var menuBar = new MenuBar
@@ -141,8 +155,35 @@ public sealed class MainWindow : Window
         //_inputFrameView.SetNeedsDisplay();
     }
 
-    private void VerifyUrlAsync()
+    private async void VerifyUrlAsync()
     {
-        
+        if (_isVerifying) return;
+
+        try
+        {
+            _isVerifying = true;
+            _verifyButton!.Text = "Verifying...";
+
+            var url = _inputField!.Text.ToString();
+            var result = await _verificationService.VerifyUrlAsync(url);
+
+            // Update your results labels
+            _statusLabel!.Text = $"Status: {(result.IsAccessible ? "Accessible" : "Not Accessible")}";
+            _sslLabel!.Text = $"SSL: {(result.HasValidSsl ? "Valid" : "Not Valid")}";
+            _titleLabel!.Text = $"Title: {result.Title ?? "Not Found"}";
+            _descriptionLabel!.Text = $"Description: {result.Description ?? "Not Found"}";
+
+            if (result.ErrorMessage != null)
+                MessageBox.ErrorQuery("Error", result.ErrorMessage, "Ok");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.ErrorQuery("Error", $"An error occured: {ex.Message}", "Ok");
+        }
+        finally
+        {
+            _isVerifying = false;
+            _verifyButton!.Text = "Verify";
+        }
     }
 }
