@@ -1,10 +1,9 @@
 ﻿using System.Text.RegularExpressions;
-using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Logging;
-using WikiLinkVerification.Models;
+using WikiLinkVerification.Core.Models;
 
-namespace WikiLinkVerification.Services;
+namespace WikiLinkVerification.Core.Services;
 
 public class UrlVerificationService
 {

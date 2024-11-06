@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Terminal.Gui;
-using WikiLinkVerification.Services;
+using WikiLinkVerification.Core.Services;
 
-namespace WikiLinkVerification;
+namespace WikiLinkVerification.TUI.Windows;
 
 public sealed class MainWindow : Window
 {

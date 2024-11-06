@@ -1,4 +1,4 @@
-﻿namespace WikiLinkVerification.Models;
+﻿namespace WikiLinkVerification.Core.Models;
 
 public class UrlVerificationResult
 {
