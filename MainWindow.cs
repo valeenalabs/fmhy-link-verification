@@ -62,7 +62,7 @@ public sealed class MainWindow : Window
                 {
                     MessageBox.Query(
                         "About",
-                        "Wiki Link Verification Tool\nVersion 1.0",
+                        "Wiki Link Verification Tool\nVersion 0.1",
                         "Ok");
                 })
             })
@@ -128,7 +128,7 @@ public sealed class MainWindow : Window
     {
         _inputHelperLabel = new Label()
         {
-            Text = "Enter URL (CTRL + U to focus)",
+            Text = "Enter URL (CTRL + F to focus)",
             Y = 2,
             X = 1,
             Height = 1
