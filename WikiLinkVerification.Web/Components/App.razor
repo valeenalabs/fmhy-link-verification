@@ -1,17 +1,13 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>FMHY Link Verification</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <base href="/"/>
-    <link rel="stylesheet" href="css/styles.css"/>
-    <link rel="icon" type="image/png" href="favicon.png"/>
-    <HeadOutlet/>
-</head>
-
-<body class="bg-gray-800">
-<Routes />
-</body>
-
-</html>
+﻿@using WikiLinkVerification.Web.Components.Layout
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>

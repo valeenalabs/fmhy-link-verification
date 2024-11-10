@@ -1,6 +1,4 @@
-﻿using WikiLinkVerification.Web.Models;
-
-namespace LinkVerificationWebsite.Models;
+﻿namespace WikiLinkVerification.Web.Models;
 
 public class UrlToVerify
 {
