@@ -1,0 +1,25 @@
+﻿@page "/"
+
+<div class="max-w-4xl mx-auto p-6">
+    <div class="bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold mb-6">Website Verification Tool</h1>
+
+        @* URL Input Section *@
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Enter URL</label>
+            <div class="flex gap-2">
+                <input type="url"
+                       class="flex-1 rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                       placeholder="https://example.com"/>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Verify
+                </button>
+            </div>
+        </div>
+
+        @* Results Section *@
+        <div class="space-y-4">
+            <!-- Your existing verification content -->
+        </div>
+    </div>
+</div>

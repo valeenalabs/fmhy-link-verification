@@ -1,0 +1,26 @@
+@* Components/Layout/NavMenu.razor *@
+<nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-xl font-semibold text-gray-800">Wiki Verification</span>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <NavLink href="" Match="NavLinkMatch.All"
+                             class="inline-flex items-center px-1 pt-1 text-gray-600 hover:text-gray-800">
+                        Index
+                    </NavLink>
+                    <NavLink href="verify"
+                             class="inline-flex items-center px-1 pt-1 text-gray-600 hover:text-gray-800">
+                        Verify Links
+                    </NavLink>
+                    <NavLink href="manual"
+                             class="inline-flex items-center px-1 pt-1 text-gray-600 hover:text-gray-800">
+                        Manual Review
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
