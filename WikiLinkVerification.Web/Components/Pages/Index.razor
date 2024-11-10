@@ -1,61 +1,123 @@
 ﻿@page "/"
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URL Information Fetcher</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .url-input {
-      min-height: 2.5rem;
-      max-height: 20rem;
-      overflow-y: auto;
-    }
-    .result-toggle:checked + .result-content {
-      display: block;
-    }
-    .result-content {
-      display: none;
-    }
-  </style>
-</head>
-<body class="bg-blue-900 text-gray-100 min-h-screen">
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6">URL Information Fetcher</h1>
+    <h1 class="text-3xl font-bold mb-6 text-white">URL Information Fetcher</h1>
 
-  <div class="mb-6">
-    <label for="urlInput" class="block mb-2 font-semibold">Enter URLs (one per line, up to 100):</label>
-    <textarea id="urlInput" class="url-input w-full p-2 bg-blue-800 rounded-md" rows="1"></textarea>
-  </div>
-
-  <button id="fetchButton" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-    Fetch Information
-  </button>
-
-  <div id="results" class="mt-8">
-    <h2 class="text-2xl font-bold mb-4">Results</h2>
-
-    <!-- Placeholder for 10 results -->
-    <div class="space-y-4">
-      <div class="bg-blue-800 rounded-md p-4" x-data="{ open: false }">
-        <label class="flex items-center cursor-pointer">
-          <input type="checkbox" class="result-toggle hidden">
-          <span class="text-lg font-semibold">Result 1</span>
-          <svg class="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
+    <div class="mb-6">
+        <label for="urlInput" class="block mb-2 font-semibold text-white">
+            Enter URLs (one per line):
         </label>
-        <div class="result-content mt-2">
-          <p>Information for Result 1 goes here.</p>
-        </div>
-      </div>
-
-      <!-- Repeat the above structure for Results 2-10 -->
-
+        <textarea
+            id="urlInput"
+            @bind="_urlInput"
+            @bind:event="oninput"
+            @onkeyup="OnTextAreaInput"
+            class="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            style="min-height: 40px; max-height: 400px; overflow-y: auto; resize: none;"
+            @ref="_textAreaRef">
+        </textarea>
     </div>
-  </div>
+
+    <div class="flex gap-4">
+        <button @onclick="VerifyUrls"
+                disabled="@_isVerifying"
+                class="@(_isVerifying ? "bg-blue-800" : "bg-blue-600 hover:bg-blue-700") text-white font-bold py-2 px-6 rounded-md transition-colors">
+            @if (_isVerifying)
+            {
+                <span>Verifying...</span>
+            }
+            else
+            {
+                <span>Verify URLs</span>
+            }
+        </button>
+
+        <button @onclick="ClearAll"
+                class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition-colors">
+            Clear All
+        </button>
+    </div>
+
+    @if (_verificationResults.Any())
+    {
+        <div class="mt-8 space-y-4">
+            <h2 class="text-2xl font-bold mb-4 text-white">Results</h2>
+
+            @foreach (var result in _verificationResults)
+            {
+                <div class="bg-gray-700 rounded-lg overflow-hidden">
+                    <button @onclick="() => ToggleResult(result)"
+                            class="w-full p-4 flex items-center justify-between text-left hover:bg-gray-600 transition-colors">
+                        <div class="flex items-center gap-3">
+                            @if (result.IsAccessible)
+                            {
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            }
+                            else
+                            {
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            }
+                            <span class="text-white font-medium">@result.FinalUrl</span>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-300 transform @(_expandedResults.Contains(result) ? "rotate-180" : "")"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    @if (_expandedResults.Contains(result))
+                    {
+                        <div class="p-4 border-t border-gray-600 bg-gray-800">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div class="space-y-2">
+                                    <p class="text-gray-300">Status Code: <span class="text-white">@result.StatusCode</span></p>
+                                    <p class="text-gray-300">
+                                        HTTPS:
+                                        <span
+                                            class="text-white">
+                                            @(result.UseHttps ? "Yes" : "No")
+                                        </span>
+                                    </p>
+                                    <p class="text-gray-300">
+                                        Content Type:
+                                        <span
+                                            class="text-white">
+                                            @(result.ContentType ?? "N/A")
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="text-gray-300">
+                                        Language: <span class="text-white">@(result.Language ?? "N/A")</span>
+                                    </p>
+                                    <p class="text-gray-300">Title: <span class="text-white">@(result.Title ?? "N/A")</span></p>
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(result.Description))
+                            {
+                                <div class="mt-4">
+                                    <p class="text-gray-300">Description:</p>
+                                    <p class="text-white mt-1">@result.Description</p>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(result.Keywords))
+                            {
+                                <div class="mt-4">
+                                    <p class="text-gray-300">Keywords:</p>
+                                    <p class="text-white mt-1">@result.Keywords</p>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(result.ErrorMessage))
+                            {
+                                <div class="mt-4">
+                                    <p class="text-red-400">Error:</p>
+                                    <p class="text-red-300 mt-1">@result.ErrorMessage</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
-</body>
-</html>
