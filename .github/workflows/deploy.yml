@@ -47,7 +47,7 @@ jobs:
       - name: Change base-tag in index.html
         run: |
           index=release/wwwroot/index.html
-          sed -i 's/<base href="\/"/<base href="\/valeena.tv\/"/g' $index
+          sed -i 's/<base href="\/"/<base href="\/\/"/g' $index
           echo "Modified index.html content:"
           cat $index
 
