@@ -26,7 +26,9 @@ jobs:
           cd WikiLinkVerification.Web
           npm install
 
+      # Add specific working directory for dotnet commands
       - name: Publish
+        working-directory: .
         run: |
           dotnet workload restore
           dotnet publish WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
@@ -35,7 +37,7 @@ jobs:
       - name: Change base-tag in index.html
         run: |
           index=release/wwwroot/index.html
-          sed -i 's/<base href="\/"/<base href="\/WikiLinkVerification\/"/g' $index
+          sed -i 's/<base href="\/"/<base href="\/"/g' $index
           
       # Add .nojekyll file to tell GitHub pages not to use Jekyll to process the site
       - name: Add .nojekyll file
