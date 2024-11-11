@@ -8,7 +8,7 @@ namespace WikiLinkVerification.Web.Components.Pages;
 public partial class Index
 {
     private HashSet<UrlVerificationResult> _expandedResults = new();
-    private bool _isVerifying = false;
+    private bool _isVerifying;
     private IJSObjectReference? _jsModule;
     private ElementReference _textAreaRef;
 

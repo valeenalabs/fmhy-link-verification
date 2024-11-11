@@ -5,15 +5,8 @@ using WikiLinkVerification.Web.Services.Interfaces;
 
 namespace WikiLinkVerification.Web.Services;
 
-public class UrlVerificationService : IUrlVerificationService
+public class UrlVerificationService(IBrowsingContext browsingContext) : IUrlVerificationService
 {
-    private readonly IBrowsingContext _browsingContext;
-
-    public UrlVerificationService(IBrowsingContext browsingContext)
-    {
-        _browsingContext = browsingContext;
-    }
-
     public async Task<UrlVerificationResult> VerifyUrlAsync(string url)
     {
         var result = new UrlVerificationResult();
@@ -34,7 +27,7 @@ public class UrlVerificationService : IUrlVerificationService
                 
                 // Parse with AngleSharp
                 
-                var document = await _browsingContext.OpenAsync(r => r.Content(html));
+                var document = await browsingContext.OpenAsync(r => r.Content(html));
                 result.UseHttps = response.ResponseMessage.RequestMessage?.RequestUri?.Scheme == "https";
                 result.ContentType = document.ContentType;
                 result.Description = document.QuerySelector("meta[name='description']")?.GetAttribute("content");
