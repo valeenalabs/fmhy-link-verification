@@ -1,0 +1,48 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd WikiLinkVerification.Web
+          npm install
+
+      - name: Publish
+        run: |
+          dotnet workload restore
+          dotnet publish WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
+          
+      # Change base tag in index.html for GitHub Pages
+      - name: Change base-tag in index.html
+        run: |
+          index=release/wwwroot/index.html
+          sed -i 's/<base href="\/"/<base href="\/WikiLinkVerification\/"/g' $index
+          
+      # Add .nojekyll file to tell GitHub pages not to use Jekyll to process the site
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+        
+      - name: Commit to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: release/wwwroot
+          branch: gh-pages
