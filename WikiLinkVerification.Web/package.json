@@ -1,0 +1,11 @@
+﻿{
+  "name": "wikilinkverification.web",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "css:build": "npx tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/css/styles.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
