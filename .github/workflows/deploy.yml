@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -22,17 +24,22 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Install dependencies
+      - name: Verify Directory Structure
         run: |
-          cd WikiLinkVerification.Web
-          npm install
-          cd ..
-
-      - name: Restore workload
-        run: dotnet workload restore ./WikiLinkVerification.sln
+          echo "Current directory:"
+          pwd
+          echo "Contents:"
+          ls -la
           
+      - name: Install dependencies
+        working-directory: WikiLinkVerification.Web
+        run: npm install
+
       - name: Build and Publish
-        run: dotnet publish "./WikiLinkVerification.Web/WikiLinkVerification.Web.csproj" -c Release -o release --nologo
+        run: |
+          echo "Building from directory:"
+          pwd
+          dotnet publish WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
           
       - name: Change base-tag in index.html
         run: |
