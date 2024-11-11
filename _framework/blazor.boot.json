@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "WikiLinkVerification.Web",
   "resources": {
-    "hash": "sha256-gtcWydWIxNeKF+CBMKWS2yAg0LhgVMJr8P7pVgQ1cKU=",
+    "hash": "sha256-NtyT+cGs3srHxUKEtKZh/irwVqIKxs014GvLAEFR8eY=",
     "jsModuleNative": {
       "dotnet.native.8.0.10.4xsnm8lwn6.js": "sha256-QVxMlY7ohmjgde/bZMA0dlWDAeuUP+tEfkiSdg4DFcE="
     },
@@ -59,7 +59,7 @@
       "System.Text.Json.wasm": "sha256-EV7mGSGXbrF922L3aC4/aXAJyMzN3NR0KnDatF7Ufdw=",
       "System.Text.RegularExpressions.wasm": "sha256-XcWxQ64Xz2+IzUcOKeh4aN27OqyMU+oYzDE4OJ+uD2s=",
       "System.Threading.wasm": "sha256-Rey4fVrFLtusjI9igO0stwioQQzJckD3MUPxxqqgHp8=",
-      "WikiLinkVerification.Web.wasm": "sha256-TpEKmQFFCv1uYtSzVi/qyQItdS1j36ys0jtx0UsFoyM="
+      "WikiLinkVerification.Web.wasm": "sha256-3DVUexbceiHsMBPQQab4LCp4kbmPkhal7CpA+fOA/pU="
     }
   },
   "cacheBootResources": true,
