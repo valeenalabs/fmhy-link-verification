@@ -9,7 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -21,25 +22,25 @@ jobs:
         with:
           node-version: '18'
           
+      - name: List directory contents for debugging
+        run: ls -la
+          
       - name: Install dependencies
         run: |
           cd WikiLinkVerification.Web
           npm install
 
-      # Add specific working directory for dotnet commands
+      # Removed working-directory and use explicit paths
       - name: Publish
-        working-directory: .
         run: |
           dotnet workload restore
-          dotnet publish WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
+          dotnet publish $(pwd)/WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
           
-      # Change base tag in index.html for GitHub Pages
       - name: Change base-tag in index.html
         run: |
           index=release/wwwroot/index.html
           sed -i 's/<base href="\/"/<base href="\/"/g' $index
           
-      # Add .nojekyll file to tell GitHub pages not to use Jekyll to process the site
       - name: Add .nojekyll file
         run: touch release/wwwroot/.nojekyll
         
