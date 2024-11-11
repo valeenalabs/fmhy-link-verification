@@ -54,3 +54,11 @@ jobs:
         with:
           folder: release/wwwroot
           branch: gh-pages
+          
+      - name: Check framework files
+        run: |
+          echo "Checking _framework directory:"
+          ls -la release/wwwroot/_framework/
+          echo "Checking for blazor.webassembly.js:"
+          find release/wwwroot -name "blazor.webassembly.js"
+          
