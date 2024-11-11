@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,41 +28,43 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Verify Directory Structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Contents:"
-          ls -la
-          
       - name: Install dependencies
         working-directory: WikiLinkVerification.Web
         run: npm install
 
       - name: Build and Publish
         run: |
-          echo "Building from directory:"
-          pwd
+          echo "Building project..."
           dotnet publish WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
+          
+      - name: Debug wwwroot contents
+        run: |
+          echo "Contents of release/wwwroot:"
+          ls -la release/wwwroot/
+          echo "Content of index.html:"
+          cat release/wwwroot/index.html
           
       - name: Change base-tag in index.html
         run: |
           index=release/wwwroot/index.html
           sed -i 's/<base href="\/"/<base href="\/valeena.tv\/"/g' $index
+          echo "Modified index.html content:"
+          cat $index
+
+      - name: Prepare deployment
+        run: |
+          cp release/wwwroot/index.html release/wwwroot/404.html
+          touch release/wwwroot/.nojekyll
           
-      - name: Add .nojekyll file
-        run: touch release/wwwroot/.nojekyll
-        
-      - name: Commit to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: release/wwwroot
           branch: gh-pages
-          
-      - name: Check framework files
+          clean: true
+
+      - name: Verify deployment
         run: |
-          echo "Checking _framework directory:"
-          ls -la release/wwwroot/_framework/
-          echo "Checking for blazor.webassembly.js:"
-          find release/wwwroot -name "blazor.webassembly.js"
-          
+          echo "Checking gh-pages branch contents:"
+          git checkout gh-pages
+          ls -la
