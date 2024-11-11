@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -22,19 +22,17 @@ jobs:
         with:
           node-version: '18'
           
-      - name: List directory contents for debugging
-        run: ls -la
-          
       - name: Install dependencies
         run: |
           cd WikiLinkVerification.Web
           npm install
+          cd ..
 
-      # Removed working-directory and use explicit paths
-      - name: Publish
-        run: |
-          dotnet workload restore
-          dotnet publish $(pwd)/WikiLinkVerification.Web/WikiLinkVerification.Web.csproj -c Release -o release --nologo
+      - name: Restore workload
+        run: dotnet workload restore ./WikiLinkVerification.sln
+          
+      - name: Build and Publish
+        run: dotnet publish "./WikiLinkVerification.Web/WikiLinkVerification.Web.csproj" -c Release -o release --nologo
           
       - name: Change base-tag in index.html
         run: |
