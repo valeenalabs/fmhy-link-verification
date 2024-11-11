@@ -1,4 +1,7 @@
-﻿### DotnetCore template
+﻿# Project-specific
+wwwroot/css/styles.css
+
+### DotnetCore template
 # .NET Core build folders
 bin/
 obj/
